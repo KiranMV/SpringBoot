@@ -1,0 +1,21 @@
+package org.test.examples.interfaces;
+
+import java.util.List;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+import org.test.examples.models.Products;
+
+@Repository
+public interface ProductRepository  extends MongoRepository<Products, String>{
+	
+	List<Products> findAll();
+	
+	List<Products> findById();
+	
+	
+/*	Products findOne(String id);
+	@Override
+    void delete(Products deleted);*/
+
+}

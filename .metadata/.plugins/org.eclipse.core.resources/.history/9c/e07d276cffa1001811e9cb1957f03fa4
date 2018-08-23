@@ -1,0 +1,123 @@
+package org.test.examples.hellocontroller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.test.examples.interfaces.ProductRepository;
+import org.test.examples.models.Products;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+
+@RestController
+public class Helloworld {
+	
+	@Autowired
+	ProductRepository productRepository;
+	
+	@GetMapping(path="/helloworld")
+	//@RequestMapping(method=RequestMethod.GET,path="/Hello-world")
+	public String helloWorld() {
+		return "Hello World";
+	}
+	
+/*	@GetMapping(path="/helloworldbean")
+	//@RequestMapping(method=RequestMethod.GET,path="/Hello-world")
+	public HelloWorldBean helloWorldBean() {
+		return new HelloWorldBean("HelloWorld Bean");
+	}*/
+	
+	@GetMapping(path="/insertdata")
+	public Map<String, Object> createTable(){
+		String str ="Hello";
+		Map<String, Object> map = new HashMap<String,Object>();
+		map.put("value",str);
+		System.out.println(map);
+		return map;
+	}
+	
+	  	@RequestMapping("/product")
+	    public List<Products> product(Model model) {
+	        model.addAttribute("products", productRepository.findAll());
+	   /*     users.stream().forEach(user -> {
+				userDtos.add(modelMapper.map(user, UserDto.class));
+			});*/
+	        System.out.println("All data sin DB..."+productRepository.findAll());
+	        return productRepository.findAll();
+	    }
+
+	  	@RequestMapping("/product/{id}")
+	    public Optional<Products> productSingle(@PathVariable String id) {
+	       // model.addAttribute("products", );
+	   /*     users.stream().forEach(user -> {
+				userDtos.add(modelMapper.map(user, UserDto.class));
+			});*/
+	  		System.out.println("single data"+ productRepository.findById(id));
+	        //System.out.println("All data sin DB..."+productRepository.findAll());
+	        return productRepository.findById(id);
+	    } 
+	    @RequestMapping("/create")
+	    public String create(Model model) {
+	        return "create";
+	    }
+
+//	    @RequestMapping("/save")
+//	    public String save(@RequestParam String prodName, @RequestParam String prodDesc, @RequestParam Double prodPrice, @RequestParam String prodImage) {
+//	        Products product = new Products();
+//	        product.setProdName(prodName);
+//	        product.setProdDesc(prodDesc);
+//	        product.setProdPrice(prodPrice);
+//	        product.setProdImage(prodImage);
+//	        productRepository.save(product);
+//
+//	        return "redirect:/show/" + product.getProdName();
+//	    }
+	    @RequestMapping("/save")
+	    public String save(@RequestBody Products product) {
+//	        Products product = new Products();
+//	        product.setProdName(prodName);
+//	        product.setProdDesc(prodDesc);
+//	        product.setProdPrice(prodPrice);
+//	        product.setProdImage(prodImage);
+	        productRepository.save(product);
+
+	        return "redirect:/show/" + product.getProdName();
+	    }
+	    
+	    @RequestMapping("/delete/{id}")
+	    public String delete(@RequestParam(value="id") String id) {
+	    	System.out.println("Id.."+ id.toString());
+	    	List<Products> list = new ArrayList<Products>();
+	    	list =  productRepository.findAll();
+	    	System.out.println("Available Product..."+list.get(0));
+	        Optional<Products> product = productRepository.findById(id);
+	        System.out.println("Product delete..."+product);
+	        productRepository.deleteById(id);
+	        return "redirect:/product";
+	    }
+	    
+	    @RequestMapping(value = "/product/{id}",method = RequestMethod.PUT)
+	    public String updateProduct(@RequestParam String id, Products product) {
+	    		Optional<Products> productdata = productRepository.findById(id);
+	    		for(int i=0; i<product.size; i++) {
+	    			
+	    		}
+	    		 
+			return null;
+	    	
+	    }
+
+	
+}
